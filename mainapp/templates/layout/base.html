@@ -23,29 +23,32 @@
         </button>
         <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
             <div class="navbar-nav">
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Профиль</a>
-                    <div class="dropdown-menu">
-                        <a class="dropdown-item" href="#">Мои объявления</a>
-                        <a class="dropdown-item" href="#">Изменить профиль</a>
-                        <a class="dropdown-item" href="#">Изменить пароль</a>
-                        <hr class="dropdown-divider">
-                        <form class="px-3">
-                            {% csrf_token %}
-                            {% bootstrap_button 'Выйти' button_class='btn-danger' %}
-                        </form>
-                        <hr class="dropdown-divider">
-                        <a class="dropdown-item" href="#">Удалить</a>
+                {% if user.is_authenticated %}
+                    <div class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Профиль</a>
+                        <div class="dropdown-menu dropdown-menu-lg-end">
+                            <a class="dropdown-item" href="{% url 'mainapp:profile' %}">Мои объявления</a>
+                            <a class="dropdown-item" href="#">Изменить профиль</a>
+                            <a class="dropdown-item" href="#">Изменить пароль</a>
+                            <hr class="dropdown-divider">
+                            <form class="px-3" method="post" action="{% url 'mainapp:logout' %}">
+                                {% csrf_token %}
+                                {% bootstrap_button 'Выйти' button_class='btn-danger' %}
+                            </form>
+                            <hr class="dropdown-divider">
+                            <a class="dropdown-item" href="#">Удалить</a>
+                        </div>
                     </div>
-                </div>
-                <a class="nav-link" href="#">Регистрация</a>
-                <a class="nav-link" href="#">Вход</a>
+                {% else %}
+                    <a class="nav-link" href="#">Регистрация</a>
+                    <a class="nav-link" href="{% url 'mainapp:login' %}">Вход</a>
+                {% endif %}
             </div>
         </div>
     </div>
 </nav>
 <div class="row">
-    <nav class="col-md-auto nav flex-column bg-light">
+    <nav class="col-md-auto nav flex-column border">
         <span class="nav-link root">Недвижимость</span>
         <a class="nav-link" href="#">Квартира</a>
         <a class="nav-link" href="#">Дом</a>
@@ -56,7 +59,7 @@
         <a class="nav-link" href="#">Грузовой</a>
         <a class="nav-link" href="#">Мотоциклы</a>
         <a class="nav-link" href="#">Лодки</a>
-        <span class="nav-link root">О сайте</span>
+        <a class="nav-link root" href="{% url 'mainapp:other' page='about' %}">О сайте</a>
     </nav>
     <main class="col py-2">
         {% bootstrap_messages %}
