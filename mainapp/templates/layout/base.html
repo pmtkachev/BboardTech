@@ -28,8 +28,8 @@
                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#">Профиль</a>
                         <div class="dropdown-menu dropdown-menu-lg-end">
                             <a class="dropdown-item" href="{% url 'mainapp:profile' %}">Мои объявления</a>
-                            <a class="dropdown-item" href="#">Изменить профиль</a>
-                            <a class="dropdown-item" href="#">Изменить пароль</a>
+                            <a class="dropdown-item" href="{% url 'mainapp:profile_edit' %}">Изменить профиль</a>
+                            <a class="dropdown-item" href="{% url 'mainapp:password_edit' %}">Изменить пароль</a>
                             <hr class="dropdown-divider">
                             <form class="px-3" method="post" action="{% url 'mainapp:logout' %}">
                                 {% csrf_token %}
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                 {% else %}
-                    <a class="nav-link" href="#">Регистрация</a>
+                    <a class="nav-link" href="{% url 'mainapp:register' %}">Регистрация</a>
                     <a class="nav-link" href="{% url 'mainapp:login' %}">Вход</a>
                 {% endif %}
             </div>
