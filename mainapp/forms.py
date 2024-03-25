@@ -3,6 +3,7 @@ from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
 
 from mainapp.models import AdvUser
+from mainapp.signals import post_register
 
 
 class ProfileEditForm(forms.ModelForm):
@@ -19,7 +20,7 @@ class RegisterForm(forms.ModelForm):
                                 help_text=password_validation.password_validators_help_texts())
     password2 = forms.CharField(label='Повторите пароль', widget=forms.PasswordInput, help_text='Повторите пароль')
 
-    def clean_password1(self):
+    def clean_password(self):
         password1 = self.cleaned_data['password1']
         if password1:
             password_validation.validate_password(password1)

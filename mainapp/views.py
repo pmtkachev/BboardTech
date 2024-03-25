@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView, LogoutView, PasswordChangeView
 from django.contrib.messages.views import SuccessMessageMixin
+from django.core.signing import BadSignature
 from django.http import Http404, HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.template import TemplateDoesNotExist
@@ -11,6 +12,7 @@ from django.views.generic import UpdateView, CreateView, TemplateView
 
 from mainapp.forms import ProfileEditForm, RegisterForm
 from mainapp.models import AdvUser
+from mainapp.utilities import signer
 
 
 def index(request):
@@ -23,6 +25,22 @@ def other_page(request, page):
     except TemplateDoesNotExist:
         raise Http404
     return HttpResponse(template.render(request=request))
+
+
+def user_activate(request, sign):
+    try:
+        username = signer.unsign(sign)
+    except BadSignature:
+        return render(request, 'mainapp/activation_failed.html')
+    user = get_object_or_404(AdvUser, username=username)
+    if user.is_activated:
+        template = 'mainapp/activation_done_earlier.html'
+    else:
+        template = 'mainapp/activation_done.html'
+        user.is_active = True
+        user.is_activated = True
+        user.save()
+    return render(request, template)
 
 
 @login_required
