@@ -49,16 +49,12 @@
 </nav>
 <div class="row">
     <nav class="col-md-auto nav flex-column border">
-        <span class="nav-link root">Недвижимость</span>
-        <a class="nav-link" href="#">Квартира</a>
-        <a class="nav-link" href="#">Дом</a>
-        <a class="nav-link" href="#">Студия</a>
-        <a class="nav-link" href="#">Комната</a>
-        <span class="nav-link root">Транспорт</span>
-        <a class="nav-link" href="#">Легковой</a>
-        <a class="nav-link" href="#">Грузовой</a>
-        <a class="nav-link" href="#">Мотоциклы</a>
-        <a class="nav-link" href="#">Лодки</a>
+        {% for rubric in rubrics %}
+            {% ifchanged rubric.super_rubric.pk %}
+                <span class="nav-link root">{{ rubric.super_rubric.name }}</span>
+            {% endifchanged %}
+            <a class="nav-link" href="{% url 'mainapp:rubric_bbs' pk=rubric.pk %}">{{ rubric.name }}</a>
+        {% endfor %}
         <a class="nav-link root" href="{% url 'mainapp:other' page='about' %}">О сайте</a>
     </nav>
     <main class="col py-2">

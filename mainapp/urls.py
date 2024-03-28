@@ -1,12 +1,13 @@
 from django.urls import path
 
 from .views import index, other_page, BbLoginView, profile, BbLogoutView, ProfileEditView, PasswordEditView, \
-    RegisterView, RegisterDoneView, user_activate, ProfileDeleteView
+    RegisterView, RegisterDoneView, user_activate, ProfileDeleteView, rubric_bbs
 
 app_name = 'mainapp'
 urlpatterns = [
     path('', index, name='index'),
     path('accounts/profile/', profile, name='profile'),
+    path('<int:pk>/', rubric_bbs, name='rubric_bbs'),
     path('<str:page>/', other_page, name='other'),
     path('accounts/login/', BbLoginView.as_view(), name='login'),
     path('accounts/logout/', BbLogoutView.as_view(), name='logout'),
