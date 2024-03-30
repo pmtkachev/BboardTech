@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 
 from .views import index, other_page, BbLoginView, profile, BbLogoutView, ProfileEditView, PasswordEditView, \
@@ -18,3 +20,5 @@ urlpatterns = [
     path('accounts/register_done/', RegisterDoneView.as_view(), name='register_done'),
     path('accounts/profile/<str:sign>/', user_activate, name='user_activate'),
 ]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

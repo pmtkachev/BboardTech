@@ -56,6 +56,9 @@
             <a class="nav-link" href="{% url 'mainapp:rubric_bbs' pk=rubric.pk %}">{{ rubric.name }}</a>
         {% endfor %}
         <a class="nav-link root" href="{% url 'mainapp:other' page='about' %}">О сайте</a>
+        {% if user.is_superuser %}
+            <a class="nav-link root" href="{% url 'admin:index' %}">Админ панель</a>
+        {% endif %}
     </nav>
     <main class="col py-2">
         {% bootstrap_messages %}
