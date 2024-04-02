@@ -7,5 +7,26 @@
     {% else %}
         <p>Здравствуйте!</p>
     {% endif %}
+    <hr>
+    <p><a href="{% url 'mainapp:bb_add' %}">Добавить объявление</a></p>
+    <hr>
     <h3>Ваши объявления: </h3>
+    <hr>
+    {% for bb in bbs %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="card h-100">
+                <img src="{{ bb.image.url }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h5 class="card-title"><a href="{% url 'mainapp:profile_bb_detail' pk=bb.pk %}">{{ bb.title }}</a>
+                    </h5>
+                    <p class="card-text">{{ bb.content|slice:'50' }}</p>
+                    <p class="card-text">{{ bb.price }}</p>
+                </div>
+                <div class="card-footer">
+                    <small class="text-body-secondary">{{ bb.created_at }}</small>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

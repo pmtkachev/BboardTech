@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,19 +8,21 @@ from django.core.paginator import Paginator
 from django.core.signing import BadSignature
 from django.db.models import Q
 from django.http import Http404, HttpResponse
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.template import TemplateDoesNotExist
 from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView, TemplateView, DeleteView
 
-from mainapp.forms import ProfileEditForm, RegisterForm, SearchForm
+from mainapp.forms import ProfileEditForm, RegisterForm, SearchForm, BbForm, AiFormSet
 from mainapp.models import AdvUser, SubRubric, Bb
 from mainapp.utilities import signer
 
 
 def index(request):
-    return render(request, 'mainapp/index.html')
+    bbs = Bb.objects.filter(is_active=True).select_related('rubric')[:10]
+    context = {'bbs': bbs}
+    return render(request, 'mainapp/index.html', context)
 
 
 def other_page(request, page):
@@ -32,7 +35,9 @@ def other_page(request, page):
 
 @login_required
 def profile(request):
-    return render(request, 'mainapp/profile.html')
+    bbs = Bb.objects.filter(author=request.user.pk)
+    context = {'bbs': bbs}
+    return render(request, 'mainapp/profile.html', context)
 
 
 class BbLoginView(LoginView):
@@ -139,3 +144,29 @@ def bb_detail(request, rubric_pk, pk):
     ais = bb.additionalimage_set.all()
     context = {'bb': bb, 'ais': ais}
     return render(request, 'mainapp/bb_detail.html', context)
+
+
+@login_required
+def profile_bb_detail(request, pk):
+    bb = get_object_or_404(Bb, pk=pk)
+    ais = bb.additionalimage_set.all()
+    context = {'bb': bb, 'ais': ais}
+    return render(request, 'mainapp/profile_bb_detail.html', context)
+
+
+@login_required
+def bb_add(request):
+    if request.method == 'POST':
+        form = BbForm(request.POST, request.FILES)
+        if form.is_valid():
+            bb = form.save()
+            formset = AiFormSet(request.POST, request.FILES, instance=bb)
+            if formset.is_valid():
+                formset.save()
+                messages.add_message(request, messages.SUCCESS, 'Объявление добавлено')
+                return redirect('mainapp:profile')
+    else:
+        form = BbForm(initial={'author': request.user.pk})
+        formset = AiFormSet()
+    context = {'form': form, 'formset': formset}
+    return render(request, 'mainapp/bb_add.html', context)
