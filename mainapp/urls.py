@@ -3,11 +3,14 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from .views import index, other_page, BbLoginView, profile, BbLogoutView, ProfileEditView, PasswordEditView, \
-    RegisterView, RegisterDoneView, user_activate, ProfileDeleteView, rubric_bbs, bb_detail, profile_bb_detail, bb_add
+    RegisterView, RegisterDoneView, user_activate, ProfileDeleteView, rubric_bbs, bb_detail, profile_bb_detail, bb_add, \
+    bb_edit, bb_delete
 
 app_name = 'mainapp'
 urlpatterns = [
     path('', index, name='index'),
+    path('accounts/profile/edit/<int:pk>', bb_edit, name='bb_edit'),
+    path('accounts/profile/delete/<int:pk>', bb_delete, name='bb_delete'),
     path('accounts/profile/add/', bb_add, name='bb_add'),
     path('accounts/profile/<int:pk>/', profile_bb_detail, name='profile_bb_detail'),
     path('accounts/profile/', profile, name='profile'),

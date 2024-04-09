@@ -25,6 +25,10 @@
                 </div>
                 <div class="card-footer">
                     <small class="text-body-secondary">{{ bb.created_at }}</small>
+                    <p class="card-text text-end">
+                        <a href="{% url 'mainapp:bb_edit' pk=bb.pk %}">Исправить</a>
+                        <a href="{% url 'mainapp:bb_delete' pk=bb.pk %}">Удалить</a>
+                    </p>
                 </div>
             </div>
         </div>
