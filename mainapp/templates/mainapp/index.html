@@ -7,7 +7,8 @@
             <div class="card h-100">
                 <img src="{{ bb.image.url }}" class="card-img-top" alt="...">
                 <div class="card-body">
-                    <h5 class="card-title">{{ bb.title }}</h5>
+                    <a class="card-title"
+                       href="{% url 'mainapp:bb_detail' pk=bb.pk rubric_pk=bb.rubric.pk %}">{{ bb.title }}</a>
                     <p class="card-text">{{ bb.content|slice:'50' }}</p>
                     <p class="card-text">{{ bb.price }}</p>
                 </div>

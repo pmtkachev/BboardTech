@@ -14,8 +14,9 @@ from django.template.loader import get_template
 from django.urls import reverse_lazy
 from django.views.generic import UpdateView, CreateView, TemplateView, DeleteView
 
-from mainapp.forms import ProfileEditForm, RegisterForm, SearchForm, BbForm, AiFormSet
-from mainapp.models import AdvUser, SubRubric, Bb
+from mainapp.forms import ProfileEditForm, RegisterForm, SearchForm, BbForm, AiFormSet, UserCommentForm, \
+    GuestCommentForm
+from mainapp.models import AdvUser, SubRubric, Bb, Comment
 from mainapp.utilities import signer
 
 
@@ -140,9 +141,26 @@ def rubric_bbs(request, pk):
 
 
 def bb_detail(request, rubric_pk, pk):
-    bb = get_object_or_404(Bb, pk=pk)
+    bb = Bb.objects.get(pk=pk)
+    initial = {'bb': bb.pk}
+    if request.user.is_authenticated:
+        initial['author'] = request.user.username
+        form_class = UserCommentForm
+    else:
+        form_class = GuestCommentForm
+    form = form_class(initial=initial)
+    if request.method == 'POST':
+        c_form = form_class(request.POST)
+        if c_form.is_valid():
+            c_form.save()
+            messages.add_message(request, messages.SUCCESS, 'Комментарий добавлен')
+            return redirect(request.get_full_path_info())
+        else:
+            form = c_form
+            messages.add_message(request, messages.WARNING, 'Комментарий не добавлен')
     ais = bb.additionalimage_set.all()
-    context = {'bb': bb, 'ais': ais}
+    comments = Comment.objects.filter(bb=pk, is_active=True)
+    context = {'bb': bb, 'ais': ais, 'comments': comments, 'form': form}
     return render(request, 'mainapp/bb_detail.html', context)
 
 
